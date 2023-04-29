@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.API", "AlgoHub.API\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.DAL", "AlgoHub.DAL\AlgoHub.DAL.csproj", "{BE0692A2-DD94-469F-AED5-31F127945BD8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.BLL", "AlgoHub.BLL\AlgoHub.BLL.csproj", "{FE86782B-F3A5-42DD-B82A-D9D381E053F6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BE0692A2-DD94-469F-AED5-31F127945BD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE0692A2-DD94-469F-AED5-31F127945BD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE0692A2-DD94-469F-AED5-31F127945BD8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

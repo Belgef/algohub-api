@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
+    <ProjectReference Include="..\AlgoHub.DAL\AlgoHub.DAL.csproj" />
   </ItemGroup>
 
 </Project>
