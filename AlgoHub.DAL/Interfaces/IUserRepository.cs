@@ -14,4 +14,5 @@ public interface IUserRepository
     Task<string?> GetUserSalt(string username);
     Task<bool> RefreshToken(Guid userId, string refreshToken, DateTime expireDate);
     Task<bool> CheckRefreshToken(Guid userId, string refreshToken);
+    Task<Role?> GetUserRole(Guid userId);
 }

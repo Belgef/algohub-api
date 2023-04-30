@@ -1,16 +1,24 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace AlgoHub.API.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Authorize]
+[Route("[controller]/[action]")]
 public class ProblemControler : ControllerBase
 {
-    [Authorize]
+    [Authorize(Roles = "Administrator")]
     [HttpGet]
-    public Task<IActionResult> Sample()
+    public Task<IActionResult> SampleAdmin()
     {
-        return Task.FromResult<IActionResult>(Ok());
+        return Task.FromResult<IActionResult>(Ok(User.FindFirstValue(ClaimTypes.Role)));
+    }
+
+    [HttpGet]
+    public Task<IActionResult> SampleUser()
+    {
+        return Task.FromResult<IActionResult>(Ok(User.FindFirstValue(ClaimTypes.Role)));
     }
 }

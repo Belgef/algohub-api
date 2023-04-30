@@ -1,4 +1,6 @@
-﻿using AlgoHub.BLL.Interfaces;
+﻿using AlgoHub.API.Models;
+using AlgoHub.BLL.Interfaces;
+using AlgoHub.DAL.Entities;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -18,14 +20,15 @@ public class JwtAuthService : IAuthService
         _securityKey = securityKey;
     }
 
-    public string GenerateToken(Guid userId)
+    public string GenerateToken(Guid userId, Role? userRole)
     {
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
             {
                 new Claim("Id", userId.ToString()),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role, userRole?.RoleName ?? "User")
              }),
             Expires = DateTime.UtcNow.AddMinutes(1),
             SigningCredentials = new SigningCredentials(

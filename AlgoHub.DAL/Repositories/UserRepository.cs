@@ -47,4 +47,11 @@ public class UserRepository : IUserRepository
 
         return result?.FirstOrDefault() == 1;
     }
+
+    public async Task<Role?> GetUserRole(Guid userId)
+    {
+        var result = await _context.GetSPResultAsync<Role?>("spGetUserRole", new { UserId = userId });
+
+        return result?.FirstOrDefault();
+    }
 }

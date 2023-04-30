@@ -3,7 +3,6 @@ using AlgoHub.BLL.Services;
 using AlgoHub.DAL;
 using AlgoHub.DAL.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;

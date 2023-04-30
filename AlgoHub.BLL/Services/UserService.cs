@@ -72,7 +72,9 @@ public class UserService : IUserService
             return null;
         }
 
-        string newToken = _authService.GenerateToken((Guid)userId);
+        Role? role = await _unitOfWork.UserRepository.GetUserRole((Guid)userId);
+
+        string newToken = _authService.GenerateToken((Guid)userId, role);
 
         return new() { Token = newToken, RefreshToken = newRefreshToken };
     }
@@ -116,7 +118,9 @@ public class UserService : IUserService
             return null;
         }
 
-        string newToken = _authService.GenerateToken(userId);
+        Role? role = await _unitOfWork.UserRepository.GetUserRole(userId);
+
+        string newToken = _authService.GenerateToken(userId, role);
 
         return new() { Token = newToken, RefreshToken = newRefreshToken };
     }
