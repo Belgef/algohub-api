@@ -7,7 +7,7 @@ namespace AlgoHub.API.Controllers;
 [ApiController]
 [Authorize]
 [Route("[controller]/[action]")]
-public class ProblemControler : ControllerBase
+public class ProblemController : ControllerBase
 {
     [Authorize(Roles = "Administrator")]
     [HttpGet]

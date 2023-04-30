@@ -9,7 +9,7 @@ namespace AlgoHub.DAL.Interfaces;
 
 public interface IUserRepository
 {
-    Task<bool> AddUser(User user);
+    Task<User?> AddUser(User user);
     Task<Guid?> GetUserId(string username, string passwordHash);
     Task<string?> GetUserSalt(string username);
     Task<bool> RefreshToken(Guid userId, string refreshToken, DateTime expireDate);

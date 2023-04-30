@@ -11,7 +11,7 @@ public class UserCreateViewModel
     [RegularExpression(@"^[.\S ]{5,200}$")]
     public string? FullName { get; set; }
 
-    [RegularExpression(@"^[\w-\.]{1,64}@([\w-]+\.)+[\w-]{2,4}$")]
+    [EmailAddress]
     public string Email { get; set; } = null!;
 
     [RegularExpression(@"(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9].*[0-9])(?=.*[^a-zA-Z0-9]).{8,32}")]

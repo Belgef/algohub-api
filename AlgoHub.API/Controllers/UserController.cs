@@ -1,6 +1,7 @@
 using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
+using AlgoHub.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -22,20 +23,21 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("/register")]
-    public async Task<ActionResult> Register([FromForm] UserCreateViewModel user)
+    public async Task<ActionResult<User>> Register(UserCreateViewModel user)
     {
-        return (await _userService.Register(new()
+        var userRes = await _userService.Register(new()
         {
             UserName = user.UserName,
             FullName = user.FullName,
             Email = user.Email,
             Password = user.Password,
             IconName = user.IconName,
-        })) ? Ok() : BadRequest();
+        });
+        return user == null ? CreatedAtAction(nameof(Register), user) : BadRequest();
     }
 
     [HttpPost("/login")]
-    public async Task<ActionResult<UserTokenData>> Login([FromForm] UserLoginViewModel user)
+    public async Task<ActionResult<UserTokenData>> Login(UserLoginViewModel user)
     {
         UserTokenData? token = await _userService.Login(new()
         {
@@ -47,7 +49,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("/refresh")]
-    public async Task<ActionResult<UserTokenData>> RefreshToken([FromForm] UserRefreshTokenViewModel tokens)
+    public async Task<ActionResult<UserTokenData>> RefreshToken(UserRefreshTokenViewModel tokens)
     {
         var newTokens = await _userService.RefreshToken(new() { Token = tokens.OldJwtToken, RefreshToken = tokens.RefreshToken });
 

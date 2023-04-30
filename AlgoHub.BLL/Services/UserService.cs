@@ -20,7 +20,7 @@ public class UserService : IUserService
         _authService = authService;
     }
 
-    public Task<bool> Register(UserCreateModel user)
+    public Task<User?> Register(UserCreateModel user)
     {
         byte[] salt = RandomNumberGenerator.GetBytes(32);
         byte[] password = Encoding.Default.GetBytes(user.Password);

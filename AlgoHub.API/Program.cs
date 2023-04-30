@@ -62,21 +62,26 @@ builder.Services.AddSwaggerGen(opt =>
         }
     });
 });
+builder.Services.AddSwaggerDocument();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddSingleton<IAuthService, JwtAuthService>((provider) =>
     new JwtAuthService(builder.Configuration["Jwt:Key"]!, jwtSecurityKey));
 
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseOpenApi();
+    app.UseSwaggerUi3();
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

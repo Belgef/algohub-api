@@ -15,15 +15,15 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<bool> AddUser(User user)
+    public async Task<User?> AddUser(User user)
     {
         var parameters = new DynamicParameters(user);
 
         using var connection = _context.CreateConnection();
 
-        int result = await connection.ExecuteAsync("spAddUser", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<User?>("spAddUser", parameters, commandType: CommandType.StoredProcedure);
 
-        return result == 1;
+        return result.FirstOrDefault();
     }
 
     public async Task<Guid?> GetUserId(string username, string passwordHash)
