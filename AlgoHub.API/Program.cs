@@ -10,7 +10,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
-builder.Services.AddSqlServer<AlgoHubDbContext>(connectionString);
+builder.Services.AddSingleton(new AlgoHubDbContext(connectionString));
 
 SymmetricSecurityKey jwtSecurityKey = new(Encoding.ASCII.GetBytes(builder.Configuration["Jwt:Secret"]!));
 

@@ -1,6 +1,8 @@
 ﻿using AlgoHub.DAL.Context;
 using AlgoHub.DAL.Entities;
 using AlgoHub.DAL.Interfaces;
+using Dapper;
+using System.Data;
 
 namespace AlgoHub.DAL.Repositories;
 
@@ -15,43 +17,67 @@ public class UserRepository : IUserRepository
 
     public async Task<bool> AddUser(User user)
     {
-        int result = await _context.ExecSPAsync("spAddUser", user);
+        var parameters = new DynamicParameters(user);
+
+        using var connection = _context.CreateConnection();
+
+        int result = await connection.ExecuteAsync("spAddUser", parameters, commandType: CommandType.StoredProcedure);
 
         return result == 1;
     }
 
     public async Task<Guid?> GetUserId(string username, string passwordHash)
     {
-        var result = await _context.GetSPResultAsync<Guid?>("spCheckUser", new { UserName = username, PasswordHash = passwordHash });
+        var parameters = new DynamicParameters(new { UserName = username, PasswordHash = passwordHash });
 
-        return result?.FirstOrDefault();
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<Guid?>("spCheckUser", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
     }
 
     public async Task<string?> GetUserSalt(string username)
     {
-        var result = await _context.GetSPResultAsync<string?>("spGetUserSalt", new { UserName = username });
+        var parameters = new DynamicParameters(new { UserName = username });
 
-        return result?.FirstOrDefault();
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<string?>("spGetUserSalt", parameters, commandType: CommandType.StoredProcedure);
+        
+        return result.FirstOrDefault();
     }
 
     public async Task<bool> RefreshToken(Guid userId, string refreshToken, DateTime expireDate)
     {
-        int result = await _context.ExecSPAsync("spRefreshToken", new { UserId = userId, RefreshToken = refreshToken, RefreshTokenExpireDate = expireDate });
+        var parameters = new DynamicParameters(new { UserId = userId, RefreshToken = refreshToken, RefreshTokenExpireDate = expireDate });
+
+        using var connection = _context.CreateConnection();
+
+        int result = await connection.ExecuteAsync("spRefreshToken", parameters, commandType: CommandType.StoredProcedure);
 
         return result == 1;
     }
 
     public async Task<bool> CheckRefreshToken(Guid userId, string refreshToken)
     {
-        var result = await _context.GetSPResultAsync<int>("spCheckRefreshToken", new { UserId = userId, RefreshToken = refreshToken });
+        var parameters = new DynamicParameters(new { UserId = userId, RefreshToken = refreshToken });
 
-        return result?.FirstOrDefault() == 1;
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int?>("spCheckRefreshToken", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault() == 1;
     }
 
     public async Task<Role?> GetUserRole(Guid userId)
     {
-        var result = await _context.GetSPResultAsync<Role?>("spGetUserRole", new { UserId = userId });
+        var parameters = new DynamicParameters(new { UserId = userId });
 
-        return result?.FirstOrDefault();
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<Role?>("spGetUserRole", parameters, commandType: CommandType.StoredProcedure);
+    
+        return result.FirstOrDefault();
     }
 }
