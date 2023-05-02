@@ -15,4 +15,7 @@ public interface IUserRepository
     Task<bool> RefreshToken(Guid userId, string refreshToken, DateTime expireDate);
     Task<bool> CheckRefreshToken(Guid userId, string refreshToken);
     Task<Role?> GetUserRole(Guid userId);
+    Task<User?> GetUserById(Guid userId);
+    Task<bool> CheckUserName(string userName);
+    Task<bool> CheckEmail(string email);
 }

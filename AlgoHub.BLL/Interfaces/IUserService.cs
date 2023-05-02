@@ -5,7 +5,10 @@ namespace AlgoHub.BLL.Interfaces;
 
 public interface IUserService
 {
-    Task<User?> Register(UserCreateModel user);
+    Task<UserModel?> Register(UserCreateModel user);
     Task<UserTokenData?> Login(UserLoginModel login);
     Task<UserTokenData?> RefreshToken(UserTokenData oldTokenData);
+    Task<UserModel?> GetUserById(Guid userId);
+    Task<bool> CheckUserName(string userName);
+    Task<bool> CheckEmail(string email);
 }

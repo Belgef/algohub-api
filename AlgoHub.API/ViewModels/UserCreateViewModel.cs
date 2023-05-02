@@ -14,9 +14,8 @@ public class UserCreateViewModel
     [EmailAddress]
     public string Email { get; set; } = null!;
 
-    [RegularExpression(@"(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9].*[0-9])(?=.*[^a-zA-Z0-9]).{8,32}")]
-    public string Password { get; set; }
+    [RegularExpression(@"(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{8,32}")]
+    public string Password { get; set; } = null!;
 
-    [RegularExpression(@"\w{1,100}")]
-    public string? IconName { get; set; }
+    public IFormFile? Icon { get; set; }
 }

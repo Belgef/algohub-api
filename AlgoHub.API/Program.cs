@@ -1,8 +1,10 @@
+using AlgoHub.API.Services;
 using AlgoHub.BLL.Interfaces;
 using AlgoHub.BLL.Services;
 using AlgoHub.DAL;
 using AlgoHub.DAL.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -63,6 +65,12 @@ builder.Services.AddSwaggerGen(opt =>
     });
 });
 builder.Services.AddSwaggerDocument();
+
+builder.Services.AddScoped<IStorageService, S3StorageService>(s =>
+{
+    var aws = builder.Configuration.GetSection("AWS");
+    return new(aws["BucketName"]!, aws["AccessKey"]!, aws["Secret"]!, aws["Region"]!);
+});
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();

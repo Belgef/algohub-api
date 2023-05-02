@@ -17,7 +17,15 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> AddUser(User user)
     {
-        var parameters = new DynamicParameters(user);
+        var parameters = new DynamicParameters(new
+        {
+            user.UserName,
+            user.FullName,
+            user.Email,
+            user.IconName,
+            user.PasswordHash,
+            user.PasswordSalt,
+        });
 
         using var connection = _context.CreateConnection();
 
@@ -44,7 +52,7 @@ public class UserRepository : IUserRepository
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<string?>("spGetUserSalt", parameters, commandType: CommandType.StoredProcedure);
-        
+
         return result.FirstOrDefault();
     }
 
@@ -77,7 +85,40 @@ public class UserRepository : IUserRepository
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<Role?>("spGetUserRole", parameters, commandType: CommandType.StoredProcedure);
-    
+
         return result.FirstOrDefault();
+    }
+
+    public async Task<User?> GetUserById(Guid userId)
+    {
+        var parameters = new DynamicParameters(new { UserId = userId });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<User?>("spGetUserById", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<bool> CheckUserName(string userName)
+    {
+        var parameters = new DynamicParameters(new { UserName = userName });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int?>("spCheckUserName", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault() == 0;
+    }
+
+    public async Task<bool> CheckEmail(string email)
+    {
+        var parameters = new DynamicParameters(new { Email = email });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int?>("spCheckEmail", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault() == 0;
     }
 }

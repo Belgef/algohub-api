@@ -1,8 +1,9 @@
 ﻿using AlgoHub.API.Models;
+using AlgoHub.API.Services;
 using AlgoHub.BLL.Interfaces;
+using AlgoHub.BLL.Mappings;
 using AlgoHub.DAL;
 using AlgoHub.DAL.Entities;
-using System.Data.SqlTypes;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,14 +14,16 @@ public class UserService : IUserService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IAuthService _authService;
+    private readonly IStorageService _storageService;
 
-    public UserService(IUnitOfWork unitOfWork, IAuthService authService)
+    public UserService(IUnitOfWork unitOfWork, IAuthService authService, IStorageService storageService)
     {
         _unitOfWork = unitOfWork;
         _authService = authService;
+        _storageService = storageService;
     }
 
-    public Task<User?> Register(UserCreateModel user)
+    public async Task<UserModel?> Register(UserCreateModel user)
     {
         byte[] salt = RandomNumberGenerator.GetBytes(32);
         byte[] password = Encoding.Default.GetBytes(user.Password);
@@ -28,14 +31,27 @@ public class UserService : IUserService
         string hashString = GenerateHash(salt, password);
         string saltString = Convert.ToBase64String(salt);
 
-        return _unitOfWork.UserRepository.AddUser(new()
+        string? imageName = null;
+        if (user.Icon != null)
         {
-            UserName = user.UserName,
-            FullName = user.FullName,
-            Email = user.Email,
-            PasswordHash = hashString,
-            PasswordSalt = saltString
-        });
+            imageName = Guid.NewGuid().ToString();
+            await _storageService.SaveFile(user.Icon, imageName);
+        }
+
+        User? userData = user.ToUser();
+
+        if (userData == null)
+        {
+            return null;
+        }
+
+        userData.IconName = imageName;
+        userData.PasswordHash = hashString;
+        userData.PasswordSalt = saltString;
+
+        var result = await _unitOfWork.UserRepository.AddUser(userData);
+
+        return result.ToUserModel();
     }
 
     private string GenerateHash(byte[] password, byte[] salt)
@@ -123,5 +139,22 @@ public class UserService : IUserService
         string newToken = _authService.GenerateToken(userId, role);
 
         return new() { Token = newToken, RefreshToken = newRefreshToken };
+    }
+
+    public async Task<UserModel?> GetUserById(Guid userId)
+    {
+        var user = await _unitOfWork.UserRepository.GetUserById(userId);
+
+        return user.ToUserModel();
+    }
+
+    public Task<bool> CheckUserName(string userName)
+    {
+        return _unitOfWork.UserRepository.CheckUserName(userName);
+    }
+
+    public Task<bool> CheckEmail(string email)
+    {
+        return _unitOfWork.UserRepository.CheckEmail(email);
     }
 }

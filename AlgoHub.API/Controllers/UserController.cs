@@ -1,3 +1,4 @@
+using AlgoHub.API.Mappings;
 using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
@@ -23,17 +24,10 @@ public class UserController : ControllerBase
     }
 
     [HttpPost("/register")]
-    public async Task<ActionResult<User>> Register(UserCreateViewModel user)
+    public async Task<ActionResult<UserViewModel>> Register([FromForm] UserCreateViewModel user)
     {
-        var userRes = await _userService.Register(new()
-        {
-            UserName = user.UserName,
-            FullName = user.FullName,
-            Email = user.Email,
-            Password = user.Password,
-            IconName = user.IconName,
-        });
-        return user == null ? CreatedAtAction(nameof(Register), user) : BadRequest();
+        var userRes = await _userService.Register(user.ToUserCreateModel()!);
+        return userRes != null ? Ok(userRes.ToUserViewModel()) : BadRequest();
     }
 
     [HttpPost("/login")]
@@ -54,5 +48,25 @@ public class UserController : ControllerBase
         var newTokens = await _userService.RefreshToken(new() { Token = tokens.OldJwtToken, RefreshToken = tokens.RefreshToken });
 
         return newTokens != null ? Ok(newTokens) : Unauthorized();
+    }
+
+    [HttpGet()]
+    public async Task<UserViewModel?> GetUserById(Guid userId)
+    {
+        var user = await _userService.GetUserById(userId);
+
+        return user.ToUserViewModel();
+    }
+
+    [HttpGet("/checkUserName")]
+    public Task<bool> CheckUserName(string userName)
+    {
+        return _userService.CheckUserName(userName);
+    }
+
+    [HttpGet("/checkEmail")]
+    public Task<bool> CheckEmail(string email)
+    {
+        return _userService.CheckEmail(email);
     }
 }
