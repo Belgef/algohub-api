@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33502.453
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.API", "AlgoHub.API\AlgoHub.API.csproj", "{9D676040-7511-49DD-B5D1-94BAB9ACD6CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.API", "AlgoHub.API\AlgoHub.API.csproj", "{9D676040-7511-49DD-B5D1-94BAB9ACD6CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.DAL", "AlgoHub.DAL\AlgoHub.DAL.csproj", "{BE0692A2-DD94-469F-AED5-31F127945BD8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.DAL", "AlgoHub.DAL\AlgoHub.DAL.csproj", "{BE0692A2-DD94-469F-AED5-31F127945BD8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.BLL", "AlgoHub.BLL\AlgoHub.BLL.csproj", "{FE86782B-F3A5-42DD-B82A-D9D381E053F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.BLL", "AlgoHub.BLL\AlgoHub.BLL.csproj", "{FE86782B-F3A5-42DD-B82A-D9D381E053F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.DAL.IntegrationTests", "AlgoHub.DAL.IntegrationTests\AlgoHub.DAL.IntegrationTests.csproj", "{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE86782B-F3A5-42DD-B82A-D9D381E053F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
