@@ -2,12 +2,8 @@ using AlgoHub.API.Mappings;
 using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
-using AlgoHub.DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Text;
 
 namespace AlgoHub.API.Controllers;
 

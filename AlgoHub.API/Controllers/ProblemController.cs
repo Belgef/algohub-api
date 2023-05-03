@@ -1,19 +1,27 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AlgoHub.API.ViewModels;
+using AlgoHub.BLL.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace AlgoHub.API.Controllers;
 
 [ApiController]
-[Authorize]
-[Route("[controller]/[action]")]
+[Route("[controller]/")]
 public class ProblemController : ControllerBase
 {
-    [Authorize(Roles = "Administrator")]
-    [HttpGet]
-    public Task<IActionResult> SampleAdmin()
+    private IProblemService _problemService;
+
+    public ProblemController(IProblemService problemService)
     {
-        return Task.FromResult<IActionResult>(Ok(User.FindFirstValue(ClaimTypes.Role)));
+        _problemService = problemService;
+    }
+
+    [HttpGet("{problemId}")]
+    public async Task<ActionResult<ProblemDetailedViewModel>> GetAll(int problemId)
+    {
+        var problem = await _problemService.GetProblemById(problemId);
+        return problem == null ? NotFound() : Ok(problem);
     }
 
     [HttpGet]
