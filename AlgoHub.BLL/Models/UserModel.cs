@@ -1,4 +1,6 @@
-﻿namespace AlgoHub.API.Models;
+﻿using AlgoHub.DAL.Entities;
+
+namespace AlgoHub.API.Models;
 
 public class UserModel
 {
@@ -6,5 +8,6 @@ public class UserModel
     public string UserName { get; set; } = null!;
     public string? FullName { get; set; }
     public string Email { get; set; } = null!;
+    public string? Role { get; set; }
     public string? IconName { get; set; }
 }

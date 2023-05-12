@@ -1,13 +1,11 @@
 ﻿namespace AlgoHub.API.ViewModels;
 
-public class ProblemDetailedViewModel
+public class ProblemViewModel
 {
     public int ProblemId { get; set; }
     public string ProblemName { get; set; } = null!;
     public string ProblemContentFileName { get; set; } = null!;
-    public string? AuthorName { get; set; }
-    public string AuthorUserName { get; set; } = null!;
-    public string? AuthorIconName { get; set; }
+    public UserViewModel? Author { get; set; }
     public string? ImageName { get; set; }
     public int Views { get; set; }
     public int Solves { get; set; }

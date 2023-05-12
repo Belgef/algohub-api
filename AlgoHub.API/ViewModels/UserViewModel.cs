@@ -6,5 +6,6 @@ public class UserViewModel
     public string UserName { get; set; } = null!;
     public string? FullName { get; set; }
     public string Email { get; set; } = null!;
+    public string? Role { get; set; }
     public string? IconName { get; set; }
 }

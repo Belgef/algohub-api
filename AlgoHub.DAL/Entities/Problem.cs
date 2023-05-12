@@ -1,13 +1,11 @@
 ﻿namespace AlgoHub.DAL.Entities;
 
-public class ProblemDetailed
+public class Problem
 {
     public int? ProblemId { get; set; }
     public string? ProblemName { get; set; }
-    public string? ProblemContentFileName { get; set; }
-    public string? AuthorName { get; set; }
-    public string? AuthorUserName { get; set; }
-    public string? AuthorIconName { get; set; }
+    public string? ProblemContent { get; set; }
+    public User? Author { get; set; }
     public string? ImageName { get; set; }
     public int? Views { get; set; }
     public int? Solves { get; set; }
@@ -16,4 +14,5 @@ public class ProblemDetailed
     public int? TimeLimitMs { get; set; }
     public int? MemoryLimitBytes { get; set; }
     public DateTime? CreateDate { get; set; }
+    public DateTime? UpdateDate { get; set; }
 }

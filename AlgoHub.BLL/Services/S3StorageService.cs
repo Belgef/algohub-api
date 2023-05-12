@@ -1,4 +1,5 @@
 ﻿using AlgoHub.BLL.Interfaces;
+using AlgoHub.DAL.Entities;
 using Amazon;
 using Amazon.S3;
 using Amazon.S3.Transfer;
@@ -35,6 +36,19 @@ public class S3StorageService : IStorageService
         var fileTransferUtility = new TransferUtility(_awsS3Client);
 
         await fileTransferUtility.UploadAsync(uploadRequest);
+    }
+
+    public async Task<string?> SaveFile(IFormFile? file)
+    {
+        if (file == null)
+        {
+            return null;
+        }
+
+        string name = Guid.NewGuid().ToString();
+        await SaveFile(file, name);
+
+        return name;
     }
 
     public Task UpdateFile(IFormFile newFile, string name)

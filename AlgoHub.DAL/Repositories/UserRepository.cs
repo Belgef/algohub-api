@@ -15,43 +15,52 @@ public class UserRepository : IUserRepository
         _context = context;
     }
 
-    public async Task<User?> AddUser(User user)
+    public async Task<Guid?> AddUser(User user)
     {
         var parameters = new DynamicParameters(new
         {
             user.UserName,
             user.FullName,
             user.Email,
-            user.IconName,
             user.PasswordHash,
             user.PasswordSalt,
+            user.IconName,
+            user.Role?.RoleId
         });
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<User?>("spAddUser", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<Guid?>("spAddUser", parameters, commandType: CommandType.StoredProcedure);
 
         return result.FirstOrDefault();
     }
 
-    public async Task<Guid?> GetUserId(string username, string passwordHash)
+    public async Task<string?> GetUserSalt(string userName)
     {
-        var parameters = new DynamicParameters(new { UserName = username, PasswordHash = passwordHash });
-
-        using var connection = _context.CreateConnection();
-
-        var result = await connection.QueryAsync<Guid?>("spCheckUser", parameters, commandType: CommandType.StoredProcedure);
-
-        return result.FirstOrDefault();
-    }
-
-    public async Task<string?> GetUserSalt(string username)
-    {
-        var parameters = new DynamicParameters(new { UserName = username });
+        var parameters = new DynamicParameters(new { UserName = userName });
 
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<string?>("spGetUserSalt", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<User?> LoginUser(string userName, string passwordHash)
+    {
+        var parameters = new DynamicParameters(new { UserName = userName, PasswordHash = passwordHash });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<User, Role, User>(
+            "spLoginUser", 
+            (u, r) => { 
+                u.Role = r; 
+                return u; 
+            }, 
+            parameters, 
+            commandType: CommandType.StoredProcedure, 
+            splitOn: "RoleId");
 
         return result.FirstOrDefault();
     }
@@ -77,7 +86,7 @@ public class UserRepository : IUserRepository
 
         return result.FirstOrDefault() == 1;
     }
-
+     
     public async Task<Role?> GetUserRole(Guid userId)
     {
         var parameters = new DynamicParameters(new { UserId = userId });
@@ -95,7 +104,15 @@ public class UserRepository : IUserRepository
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<User?>("spGetUserById", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<User, Role, User>(
+            "spGetUserById",
+            (u, r) => {
+                u.Role = r;
+                return u;
+            },
+            parameters,
+            commandType: CommandType.StoredProcedure,
+            splitOn: "RoleId");
 
         return result.FirstOrDefault();
     }

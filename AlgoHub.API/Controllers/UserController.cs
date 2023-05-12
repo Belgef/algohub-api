@@ -1,7 +1,7 @@
-using AlgoHub.API.Mappings;
 using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,17 +13,19 @@ namespace AlgoHub.API.Controllers;
 public class UserController : ControllerBase
 {
     private readonly IUserService _userService;
+    private readonly IMapper _mapper;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, IMapper mapper)
     {
         _userService = userService;
+        _mapper = mapper;
     }
 
     [HttpPost("/register")]
-    public async Task<ActionResult<UserViewModel>> Register([FromForm] UserCreateViewModel user)
+    public async Task<ActionResult<Guid>> Register([FromForm] UserCreateViewModel user)
     {
-        var userRes = await _userService.Register(user.ToUserCreateModel()!);
-        return userRes != null ? Ok(userRes.ToUserViewModel()) : BadRequest();
+        var result = await _userService.Register(_mapper.Map<UserCreateModel>(user));
+        return result != null ? Ok(result) : BadRequest();
     }
 
     [HttpPost("/login")]
@@ -51,7 +53,7 @@ public class UserController : ControllerBase
     {
         var user = await _userService.GetUserById(userId);
 
-        return user.ToUserViewModel();
+        return _mapper.Map<UserViewModel>(user);
     }
 
     [HttpGet("/checkUserName")]
