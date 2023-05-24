@@ -16,7 +16,15 @@ public class AlgoHubProfile : Profile
         CreateMap<ProblemModel, ProblemViewModel>();
         CreateMap<UserCreateViewModel, UserCreateModel>();
         CreateMap<UserModel, UserViewModel>();
-        CreateMap<ProblemCreateModel, Problem>().ForMember(dest => dest.ProblemContent, opt => opt.Ignore());
+        CreateMap<ProblemCreateModel, Problem>();
         CreateMap<ProblemCreateViewModel, ProblemCreateModel>();
+        CreateMap<TestViewModel, TestModel>();
+        CreateMap<TestModel, Test>();
+        CreateMap<LessonModel, Lesson>();
+        CreateMap<Lesson, LessonModel>();
+        CreateMap<LessonCreateModel, Lesson>();
+        CreateMap<LessonModel, LessonViewModel>();
+        CreateMap<LessonCreateModel, Lesson>();
+        CreateMap<LessonCreateViewModel, LessonCreateModel>();
     }
 }

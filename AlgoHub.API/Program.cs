@@ -76,6 +76,7 @@ builder.Services.AddScoped<IStorageService, S3StorageService>(s =>
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProblemService, ProblemService>();
+builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddSingleton<IAuthService, JwtAuthService>((provider) =>
     new JwtAuthService(builder.Configuration["Jwt:Key"]!, jwtSecurityKey));
 

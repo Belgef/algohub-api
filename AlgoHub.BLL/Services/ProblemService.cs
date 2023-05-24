@@ -40,17 +40,6 @@ public class ProblemService : IProblemService
         newProblem.Author = new User() { UserId = problem.AuthorId };
         newProblem.ImageName = await _storageService.SaveFile(problem.Image);
 
-        var contentSaved = problem.ProblemContent.Select(async c => new
-        {
-            c.ContentType,
-            c.Value,
-            ImageName = await _storageService.SaveFile(c.Image),
-            c.Code
-        });
-
-        string contentRaw = JsonSerializer.Serialize(contentSaved);
-        newProblem.ProblemContent = contentRaw;
-
         return await _unitOfWork.ProblemRepository.AddProblem(newProblem);
     }
 }

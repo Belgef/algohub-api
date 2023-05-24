@@ -5,6 +5,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace AlgoHub.API.Controllers;
 
@@ -45,11 +46,15 @@ public class ProblemController : ControllerBase
 
         if (userId == null)
         {
-            Unauthorized();
+            return Unauthorized();
         }
 
         ProblemCreateModel model = _mapper.Map<ProblemCreateModel>(problem);
         model.AuthorId = Guid.Parse(userId!);
+        model.Tests = JsonSerializer.Deserialize<TestModel[]>(problem.TestsString, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
 
         int? result = await _problemService.AddProblem(model);
 

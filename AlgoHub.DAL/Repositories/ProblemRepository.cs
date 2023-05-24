@@ -62,7 +62,8 @@ public class ProblemRepository : IProblemRepository
 
     public async Task<int?> AddProblem(Problem problem)
     {
-        var parameters = new DynamicParameters(new { 
+        var parameters = new DynamicParameters(new
+        {
             problem.ProblemName,
             problem.ProblemContent,
             AuthorId = problem.Author?.UserId,
@@ -74,6 +75,29 @@ public class ProblemRepository : IProblemRepository
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<int>("spAddProblem", parameters, commandType: CommandType.StoredProcedure);
+
+        int problemId = result.FirstOrDefault();
+
+        foreach (var test in problem.Tests!)
+        {
+            await AddTest(test, problemId);
+        }
+
+        return problemId;
+    }
+
+    private async Task<int?> AddTest(Test test, int problemId)
+    {
+        var parameters = new DynamicParameters(new
+        {
+            ProblemId = problemId,
+            test.Input,
+            test.Output,
+        });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int>("spAddTest", parameters, commandType: CommandType.StoredProcedure);
 
         return result.FirstOrDefault();
     }

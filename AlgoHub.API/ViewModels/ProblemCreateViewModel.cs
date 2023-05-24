@@ -7,7 +7,7 @@ public class ProblemCreateViewModel
 {
     [RegularExpression(@"[\S ]{5,100}")]
     public string ProblemName { get; set; } = null!;
-    public ContentElement[] ProblemContent { get; set; } = null!;
+    public string ProblemContent { get; set; } = null!;
     public IFormFile? Image { get; set; }
 
     [Range(1, 60000)]
@@ -15,4 +15,5 @@ public class ProblemCreateViewModel
 
     [Range(1, 10240)]
     public int MemoryLimitBytes { get; set; }
+    public string TestsString { get; set; } = null!;
 }

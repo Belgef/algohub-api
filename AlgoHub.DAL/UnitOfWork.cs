@@ -11,6 +11,7 @@ public class UnitOfWork : IUnitOfWork
 
     private IUserRepository? _userRepository;
     private IProblemRepository? _problemRepository;
+    private ILessonRepository? _lessonRepository;
 
     public UnitOfWork(AlgoHubDbContext dbContext)
     {
@@ -22,4 +23,7 @@ public class UnitOfWork : IUnitOfWork
 
     public IProblemRepository ProblemRepository
         => _problemRepository ??= new ProblemRepository(_dbContext);
+
+    public ILessonRepository LessonRepository
+        => _lessonRepository ??= new LessonRepository(_dbContext);
 }

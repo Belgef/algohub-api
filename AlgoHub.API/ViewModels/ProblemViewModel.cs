@@ -4,7 +4,7 @@ public class ProblemViewModel
 {
     public int ProblemId { get; set; }
     public string ProblemName { get; set; } = null!;
-    public string ProblemContentFileName { get; set; } = null!;
+    public string ProblemContent { get; set; } = null!;
     public UserViewModel? Author { get; set; }
     public string? ImageName { get; set; }
     public int Views { get; set; }
