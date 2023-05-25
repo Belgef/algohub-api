@@ -4,7 +4,7 @@ public class LessonModel
 {
     public int? LessonId { get; set; }
     public string? Title { get; set; }
-    public string? LessonContent { get; set; }
+    public ContentElement[]? LessonContent { get; set; }
     public UserModel? Author { get; set; }
     public string? ImageName { get; set; }
     public int? Views { get; set; }

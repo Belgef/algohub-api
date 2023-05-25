@@ -7,7 +7,7 @@ public class ProblemModel
 {
     public int? ProblemId { get; set; }
     public string? ProblemName { get; set; }
-    public string? ProblemContent { get; set; }
+    public ContentElement[]? ProblemContent { get; set; }
     public UserModel? Author { get; set; }
     public string? ImageName { get; set; }
     public int? Views { get; set; }

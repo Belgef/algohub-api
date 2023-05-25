@@ -3,6 +3,7 @@ using AlgoHub.BLL.Interfaces;
 using AlgoHub.DAL;
 using AlgoHub.DAL.Entities;
 using AutoMapper;
+using System.Text.Json;
 
 namespace AlgoHub.BLL.Services;
 
@@ -23,7 +24,16 @@ public class LessonService : ILessonService
     {
         var result = await _unitOfWork.LessonRepository.GetLessonById(lessonId);
 
-        return _mapper.Map<LessonModel>(result);
+        if(result == null)
+        {
+            return null;
+        }
+
+        var model = _mapper.Map<LessonModel>(result);
+
+        model.LessonContent = JsonSerializer.Deserialize<ContentElement[]>(result.LessonContent ?? "[]", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        return model;
     }
 
     public async Task<LessonModel[]> GetLessons()
@@ -41,4 +51,10 @@ public class LessonService : ILessonService
 
         return await _unitOfWork.LessonRepository.AddLesson(newLesson);
     }
+
+    public Task<int?> AddLessonVote(int lessonId, Guid userId, bool isUpvote)
+        => _unitOfWork.LessonRepository.AddLessonVote(lessonId, userId, isUpvote);
+
+    public Task<bool?> GetLessonVote(int lessonId, Guid userId)
+        => _unitOfWork.LessonRepository.GetLessonVote(lessonId, userId);
 }

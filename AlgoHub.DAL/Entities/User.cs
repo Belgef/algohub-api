@@ -1,4 +1,7 @@
-﻿namespace AlgoHub.DAL.Entities;
+﻿using System.Collections.Generic;
+using System.Data;
+
+namespace AlgoHub.DAL.Entities;
 
 public class User
 {

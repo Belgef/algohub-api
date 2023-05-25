@@ -74,13 +74,18 @@ public class ProblemRepository : IProblemRepository
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<int>("spAddProblem", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<int?>("spAddProblem", parameters, commandType: CommandType.StoredProcedure);
 
-        int problemId = result.FirstOrDefault();
+        int? problemId = result.FirstOrDefault();
+
+        if (problemId == null)
+        {
+            return null;
+        }
 
         foreach (var test in problem.Tests!)
         {
-            await AddTest(test, problemId);
+            await AddTest(test, problemId ?? -1);
         }
 
         return problemId;
@@ -97,7 +102,38 @@ public class ProblemRepository : IProblemRepository
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<int>("spAddTest", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<int?>("spAddTest", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote)
+    {
+        var parameters = new DynamicParameters(new
+        {
+            ProblemId = problemId,
+            AuthorId = authorId,
+            IsUpvote = isUpvote
+        });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int?>("spAddProblemVote", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<bool?> GetProblemVote(int problemId, Guid authorId)
+    {
+        var parameters = new DynamicParameters(new
+        {
+            ProblemId = problemId,
+            AuthorId = authorId
+        });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<bool?>("spGetProblemVote", parameters, commandType: CommandType.StoredProcedure);
 
         return result.FirstOrDefault();
     }

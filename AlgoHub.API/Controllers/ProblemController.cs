@@ -1,6 +1,7 @@
 ﻿using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
+using AlgoHub.BLL.Services;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,6 +58,38 @@ public class ProblemController : ControllerBase
         });
 
         int? result = await _problemService.AddProblem(model);
+
+        return result != null ? Ok(result) : BadRequest();
+    }
+
+    [HttpPost("Vote")]
+    [Authorize(Roles = "User")]
+    public async Task<ActionResult<int?>> AddProblemVote([FromForm] VoteViewModel vote)
+    {
+        string? userId = User.FindFirstValue("Id");
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
+        int? result = await _problemService.AddProblemVote(vote.Id, Guid.Parse(userId!), vote.IsUpvote);
+
+        return result != null ? Ok(result) : BadRequest();
+    }
+
+    [HttpGet("Vote")]
+    [Authorize(Roles = "User")]
+    public async Task<ActionResult<bool?>> GetProblemVote(int problemId)
+    {
+        string? userId = User.FindFirstValue("Id");
+
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+
+        bool? result = await _problemService.GetProblemVote(problemId, Guid.Parse(userId!));
 
         return result != null ? Ok(result) : BadRequest();
     }

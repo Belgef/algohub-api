@@ -1,4 +1,5 @@
 ﻿using AlgoHub.API.Models;
+using AlgoHub.API.Services;
 using AlgoHub.BLL.Interfaces;
 using AlgoHub.DAL;
 using AlgoHub.DAL.Entities;
@@ -24,7 +25,16 @@ public class ProblemService : IProblemService
     {
         var result = await _unitOfWork.ProblemRepository.GetProblemById(problemid);
 
-        return _mapper.Map<ProblemModel>(result);
+        if (result == null)
+        {
+            return null;
+        }
+
+        var model = _mapper.Map<ProblemModel>(result);
+
+        model.ProblemContent = JsonSerializer.Deserialize<ContentElement[]>(result.ProblemContent ?? "[]", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+
+        return model;
     }
 
     public async Task<ProblemModel[]> GetProblems()
@@ -42,4 +52,10 @@ public class ProblemService : IProblemService
 
         return await _unitOfWork.ProblemRepository.AddProblem(newProblem);
     }
+
+    public Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote)
+        => _unitOfWork.ProblemRepository.AddProblemVote(problemId, authorId, isUpvote);
+
+    public Task<bool?> GetProblemVote(int problemId, Guid authorId)
+        => _unitOfWork.ProblemRepository.GetProblemVote(problemId, authorId);
 }

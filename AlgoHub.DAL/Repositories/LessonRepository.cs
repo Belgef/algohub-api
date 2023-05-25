@@ -72,7 +72,38 @@ public class LessonRepository : ILessonRepository
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<int>("spAddLesson", parameters, commandType: CommandType.StoredProcedure);
+        var result = await connection.QueryAsync<int?>("spAddLesson", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<int?> AddLessonVote(int lessonId, Guid authorId, bool isUpvote)
+    {
+        var parameters = new DynamicParameters(new
+        {
+            LessonId = lessonId,
+            AuthorId = authorId,
+            IsUpvote = isUpvote
+        });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<int?>("spAddLessonVote", parameters, commandType: CommandType.StoredProcedure);
+
+        return result.FirstOrDefault();
+    }
+
+    public async Task<bool?> GetLessonVote(int lessonId, Guid authorId)
+    {
+        var parameters = new DynamicParameters(new
+        {
+            LessonId = lessonId,
+            AuthorId = authorId
+        });
+
+        using var connection = _context.CreateConnection();
+
+        var result = await connection.QueryAsync<bool?>("spGetLessonVote", parameters, commandType: CommandType.StoredProcedure);
 
         return result.FirstOrDefault();
     }
