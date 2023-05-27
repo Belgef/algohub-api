@@ -8,4 +8,6 @@ public interface IUnitOfWork
     IProblemRepository ProblemRepository { get; }
     ILessonRepository LessonRepository { get; }
     ICommentRepository CommentRepository { get; }
+    ISolveRepository SolveRepository { get; }
+    ITestRepository TestRepository { get; }
 }

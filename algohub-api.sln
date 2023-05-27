@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.DAL", "AlgoHub.DAL\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.BLL", "AlgoHub.BLL\AlgoHub.BLL.csproj", "{FE86782B-F3A5-42DD-B82A-D9D381E053F6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.DAL.IntegrationTests", "AlgoHub.DAL.IntegrationTests\AlgoHub.DAL.IntegrationTests.csproj", "{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlgoHub.DAL.IntegrationTests", "AlgoHub.DAL.IntegrationTests\AlgoHub.DAL.IntegrationTests.csproj", "{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlgoHub.BLL.IntegrationTests", "AlgoHub.BLL.IntegrationTests\AlgoHub.BLL.IntegrationTests.csproj", "{7EC8A4F1-CD84-4BDE-8CFC-35F196C58533}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68A73DFD-B0F6-4A20-B618-5E4A12CCDD23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EC8A4F1-CD84-4BDE-8CFC-35F196C58533}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EC8A4F1-CD84-4BDE-8CFC-35F196C58533}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EC8A4F1-CD84-4BDE-8CFC-35F196C58533}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EC8A4F1-CD84-4BDE-8CFC-35F196C58533}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -50,7 +50,19 @@ public class ProblemService : IProblemService
         newProblem.Author = new User() { UserId = problem.AuthorId };
         newProblem.ImageName = await _storageService.SaveFile(problem.Image);
 
-        return await _unitOfWork.ProblemRepository.AddProblem(newProblem);
+        int? problemId = await _unitOfWork.ProblemRepository.AddProblem(newProblem);
+
+        if(problemId == null)
+        {
+            return null;
+        }
+
+        foreach (var test in newProblem.Tests!)
+        {
+            await _unitOfWork.TestRepository.AddTest(test, problemId ?? -1);
+        }
+
+        return problemId;
     }
 
     public Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote)

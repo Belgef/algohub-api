@@ -1,4 +1,6 @@
-﻿namespace AlgoHub.API.ViewModels;
+﻿using AlgoHub.API.Models;
+
+namespace AlgoHub.API.ViewModels;
 
 public class LessonCommentViewModel
 {

@@ -76,34 +76,6 @@ public class ProblemRepository : IProblemRepository
 
         var result = await connection.QueryAsync<int?>("spAddProblem", parameters, commandType: CommandType.StoredProcedure);
 
-        int? problemId = result.FirstOrDefault();
-
-        if (problemId == null)
-        {
-            return null;
-        }
-
-        foreach (var test in problem.Tests!)
-        {
-            await AddTest(test, problemId ?? -1);
-        }
-
-        return problemId;
-    }
-
-    private async Task<int?> AddTest(Test test, int problemId)
-    {
-        var parameters = new DynamicParameters(new
-        {
-            ProblemId = problemId,
-            test.Input,
-            test.Output,
-        });
-
-        using var connection = _context.CreateConnection();
-
-        var result = await connection.QueryAsync<int?>("spAddTest", parameters, commandType: CommandType.StoredProcedure);
-
         return result.FirstOrDefault();
     }
 

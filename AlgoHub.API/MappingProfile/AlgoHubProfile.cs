@@ -38,5 +38,11 @@ public class AlgoHubProfile : Profile
         CreateMap<ProblemCommentCreateViewModel, ProblemCommentCreateModel>();
         CreateMap<SolveCommentModel, SolveCommentViewModel>();
         CreateMap<SolveCommentCreateViewModel, SolveCommentCreateModel>();
+        CreateMap<Solve, SolveModel>();
+        CreateMap<SolveCreateModel, Solve>();
+        CreateMap<Language, LanguageModel>();
+        CreateMap<SolveModel, SolveViewModel>();
+        CreateMap<LanguageModel, LanguageViewModel>();
+        CreateMap<SolveCreateViewModel, SolveCreateModel>();
     }
 }

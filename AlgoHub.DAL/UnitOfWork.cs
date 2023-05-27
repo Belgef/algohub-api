@@ -1,5 +1,4 @@
 ﻿using AlgoHub.DAL.Context;
-using AlgoHub.DAL.Entities;
 using AlgoHub.DAL.Interfaces;
 using AlgoHub.DAL.Repositories;
 
@@ -13,6 +12,8 @@ public class UnitOfWork : IUnitOfWork
     private IProblemRepository? _problemRepository;
     private ILessonRepository? _lessonRepository;
     private ICommentRepository? _commentRepository;
+    private ISolveRepository? _solveRepository;
+    private ITestRepository? _testRepository;
 
     public UnitOfWork(AlgoHubDbContext dbContext)
     {
@@ -30,4 +31,10 @@ public class UnitOfWork : IUnitOfWork
 
     public ICommentRepository CommentRepository
         => _commentRepository ??= new CommentRepository(_dbContext);
+
+    public ISolveRepository SolveRepository
+        => _solveRepository ??= new SolveRepository(_dbContext);
+
+    public ITestRepository TestRepository
+        => _testRepository ??= new TestRepository(_dbContext);
 }
