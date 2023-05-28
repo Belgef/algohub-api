@@ -11,4 +11,6 @@ public class LessonModel
     public int? Upvotes { get; set; }
     public int? Downvotes { get; set; }
     public DateTime? CreateDate { get; set; }
+    public string[]? Tags { get; set; }
+    public bool? Deleted { get; set; }
 }

@@ -6,8 +6,8 @@ namespace AlgoHub.BLL.Interfaces;
 public interface IProblemService
 {
     Task<int?> AddProblem(ProblemCreateModel problem);
+    Task<bool> DeleteProblem(int problemId);
     Task<ProblemModel?> GetProblemById(int problemid);
-    Task<ProblemModel[]> GetProblems();
-    Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote);
-    Task<bool?> GetProblemVote(int problemId, Guid authorId);
+    Task<ProblemModel[]> GetProblems(bool deleted = false);
+    Task<bool> RetrieveProblem(int problemId);
 }

@@ -45,7 +45,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost("/LessonComments")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<int?>> AddLessonComment([FromForm] LessonCommentCreateViewModel comment)
     {
         string? userId = User.FindFirstValue("Id");
@@ -64,7 +64,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost("/ProblemComments")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<int?>> AddProblemComment([FromForm] ProblemCommentCreateViewModel comment)
     {
         string? userId = User.FindFirstValue("Id");
@@ -83,7 +83,7 @@ public class CommentController : ControllerBase
     }
 
     [HttpPost("/SolveComments")]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<int?>> AddSolveComment([FromForm] SolveCommentCreateViewModel comment)
     {
         string? userId = User.FindFirstValue("Id");

@@ -17,4 +17,6 @@ public class ProblemModel
     public int? TimeLimitMs { get; set; }
     public int? MemoryLimitBytes { get; set; }
     public DateTime? CreateDate { get; set; }
+    public string[]? Tags { get; set; }
+    public bool? Deleted { get; set; }
 }

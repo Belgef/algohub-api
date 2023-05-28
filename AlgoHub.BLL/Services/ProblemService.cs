@@ -34,14 +34,23 @@ public class ProblemService : IProblemService
 
         model.ProblemContent = JsonSerializer.Deserialize<ContentElement[]>(result.ProblemContent ?? "[]", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
+        model.Tags = await _unitOfWork.TagRepository.GetProblemTags(problemid);
+
         return model;
     }
 
-    public async Task<ProblemModel[]> GetProblems()
+    public async Task<ProblemModel[]> GetProblems(bool deleted = false)
     {
-        var result = await _unitOfWork.ProblemRepository.GetProblems();
+        var result = await _unitOfWork.ProblemRepository.GetProblems(deleted);
 
-        return _mapper.Map<ProblemModel[]>(result);
+        var problems = _mapper.Map<ProblemModel[]>(result);
+
+        foreach (var problem in problems)
+        {
+            problem.Tags = await _unitOfWork.TagRepository.GetProblemTags(problem.ProblemId ?? -1);
+        }
+
+        return problems;
     }
 
     public async Task<int?> AddProblem(ProblemCreateModel problem)
@@ -52,7 +61,7 @@ public class ProblemService : IProblemService
 
         int? problemId = await _unitOfWork.ProblemRepository.AddProblem(newProblem);
 
-        if(problemId == null)
+        if (problemId == null)
         {
             return null;
         }
@@ -62,12 +71,15 @@ public class ProblemService : IProblemService
             await _unitOfWork.TestRepository.AddTest(test, problemId ?? -1);
         }
 
+        foreach (var tag in problem.Tags ?? Array.Empty<string>())
+        {
+            await _unitOfWork.TagRepository.AddProblemTag(tag, problemId ?? -1);
+        }
+
         return problemId;
     }
 
-    public Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote)
-        => _unitOfWork.ProblemRepository.AddProblemVote(problemId, authorId, isUpvote);
+    public Task<bool> DeleteProblem(int problemId) => _unitOfWork.ProblemRepository.DeleteProblem(problemId);
 
-    public Task<bool?> GetProblemVote(int problemId, Guid authorId)
-        => _unitOfWork.ProblemRepository.GetProblemVote(problemId, authorId);
+    public Task<bool> RetrieveProblem(int problemId) => _unitOfWork.ProblemRepository.RetrieveProblem(problemId);
 }

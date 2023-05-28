@@ -1,10 +1,13 @@
 ﻿using AlgoHub.API.Models;
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
+using AlgoHub.BLL.Services;
+using AlgoHub.DAL.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace AlgoHub.API.Controllers;
 
@@ -29,16 +32,25 @@ public class LessonController : ControllerBase
         return lessons != null ? Ok(_mapper.Map<LessonViewModel[]>(lessons)) : BadRequest();
     }
 
+    [HttpGet("Deleted")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<LessonViewModel[]>> GetDeleted()
+    {
+        var lessons = await _lessonService.GetLessons(true);
+
+        return lessons != null ? Ok(_mapper.Map<LessonViewModel[]>(lessons)) : BadRequest();
+    }
+
     [HttpGet("{problemId}")]
     public async Task<ActionResult<LessonViewModel>> Get(int problemId)
     {
         var lesson = await _lessonService.GetLessonById(problemId);
 
-        return lesson != null ? Ok(lesson) : NotFound();
+        return lesson != null && (!(lesson.Deleted??false) || User.IsInRole("Administrator")) ? Ok(lesson) : NotFound();
     }
 
     [HttpPost]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<int?>> AddLesson([FromForm] LessonCreateViewModel lesson)
     {
         string? userId = User.FindFirstValue("Id");
@@ -50,41 +62,28 @@ public class LessonController : ControllerBase
 
         LessonCreateModel model = _mapper.Map<LessonCreateModel>(lesson);
         model.AuthorId = Guid.Parse(userId!);
+        model.Tags = JsonSerializer.Deserialize<string[]>(lesson.TagsString);
 
         int? result = await _lessonService.AddLesson(model);
 
         return result != null ? Ok(result) : BadRequest();
     }
 
-    [HttpPost("Vote")]
-    [Authorize(Roles = "User")]
-    public async Task<ActionResult<int?>> AddLessonVote([FromForm] VoteViewModel vote)
+    [HttpPost("Delete/{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<bool>> DeleteLesson(int id)
     {
-        string? userId = User.FindFirstValue("Id");
+        bool result = await _lessonService.DeleteLesson(id);
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        int? result = await _lessonService.AddLessonVote(vote.Id, Guid.Parse(userId!), vote.IsUpvote);
-
-        return result != null ? Ok(result) : BadRequest();
+        return result ? Ok() : BadRequest();
     }
 
-    [HttpGet("Vote")]
-    [Authorize(Roles = "User")]
-    public async Task<ActionResult<bool?>> GetLessonVote(int lessonId)
+    [HttpPost("Retrieve/{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<bool>> RetrieveLesson(int id)
     {
-        string? userId = User.FindFirstValue("Id");
+        bool result = await _lessonService.RetrieveLesson(id);
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        bool? result = await _lessonService.GetLessonVote(lessonId, Guid.Parse(userId!));
-
-        return result != null ? Ok(result) : BadRequest();
+        return result ? Ok() : BadRequest();
     }
 }

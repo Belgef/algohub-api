@@ -1,6 +1,7 @@
 ﻿using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
 using AlgoHub.BLL.Services;
+using AlgoHub.DAL;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ public class StoreController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<string?>> UploadImage([FromForm] ImageViewModel image)
     {
 

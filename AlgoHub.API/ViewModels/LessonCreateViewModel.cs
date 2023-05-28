@@ -8,4 +8,5 @@ public class LessonCreateViewModel
     public string Title { get; set; } = null!;
     public string LessonContent { get; set; } = null!;
     public IFormFile? Image { get; set; }
+    public string TagsString { get; set; } = null!;
 }

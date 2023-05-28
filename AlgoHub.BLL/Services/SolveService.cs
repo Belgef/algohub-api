@@ -86,10 +86,4 @@ public class SolveService : ISolveService
         : r.Output?.TrimEnd() != tests[i].Output?.TrimEnd() ? $"Wrong output"
         : ""
         ).ToArray();
-
-    public Task<int?> AddSolveVote(int solveId, Guid authorId, bool isUpvote)
-        => _unitOfWork.SolveRepository.AddSolveVote(solveId, authorId, isUpvote);
-
-    public Task<bool?> GetSolveVote(int solveId, Guid authorId)
-        => _unitOfWork.SolveRepository.GetSolveVote(solveId, authorId);
 }

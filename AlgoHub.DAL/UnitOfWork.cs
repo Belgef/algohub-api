@@ -14,6 +14,8 @@ public class UnitOfWork : IUnitOfWork
     private ICommentRepository? _commentRepository;
     private ISolveRepository? _solveRepository;
     private ITestRepository? _testRepository;
+    private ITagRepository? _tagRepository;
+    private IVoteRepository? _voteRepository;
 
     public UnitOfWork(AlgoHubDbContext dbContext)
     {
@@ -37,4 +39,10 @@ public class UnitOfWork : IUnitOfWork
 
     public ITestRepository TestRepository
         => _testRepository ??= new TestRepository(_dbContext);
+
+    public ITagRepository TagRepository
+        => _tagRepository ??= new TagRepository(_dbContext);
+
+    public IVoteRepository VoteRepository
+        => _voteRepository ??= new VoteRepository(_dbContext);
 }

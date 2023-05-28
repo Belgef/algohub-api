@@ -39,8 +39,10 @@ public class ProblemRepository : IProblemRepository
         return result.FirstOrDefault();
     }
 
-    public async Task<Problem[]> GetProblems()
+    public async Task<Problem[]> GetProblems(bool deleted = false)
     {
+        var parameters = new DynamicParameters(new { Deleted = deleted });
+
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<Problem, User?, Problem>(
@@ -54,6 +56,7 @@ public class ProblemRepository : IProblemRepository
 
                 return p;
             },
+            parameters,
             splitOn: "UserName",
             commandType: CommandType.StoredProcedure);
 
@@ -79,34 +82,31 @@ public class ProblemRepository : IProblemRepository
         return result.FirstOrDefault();
     }
 
-    public async Task<int?> AddProblemVote(int problemId, Guid authorId, bool isUpvote)
+    public async Task<bool> DeleteProblem(int problemId)
     {
         var parameters = new DynamicParameters(new
         {
             ProblemId = problemId,
-            AuthorId = authorId,
-            IsUpvote = isUpvote
         });
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<int?>("spAddProblemVote", parameters, commandType: CommandType.StoredProcedure);
+        int result = await connection.ExecuteAsync("spDeleteProblem", parameters, commandType: CommandType.StoredProcedure);
 
-        return result.FirstOrDefault();
+        return result == 1;
     }
 
-    public async Task<bool?> GetProblemVote(int problemId, Guid authorId)
+    public async Task<bool> RetrieveProblem(int problemId)
     {
         var parameters = new DynamicParameters(new
         {
             ProblemId = problemId,
-            AuthorId = authorId
         });
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<bool?>("spGetProblemVote", parameters, commandType: CommandType.StoredProcedure);
+        int result = await connection.ExecuteAsync("spRetrieveProblem", parameters, commandType: CommandType.StoredProcedure);
 
-        return result.FirstOrDefault();
+        return result == 1;
     }
 }

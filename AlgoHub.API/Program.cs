@@ -78,8 +78,10 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProblemService, ProblemService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<ICompilerService, FakeCompilerService>();
+builder.Services.AddScoped<ICompilerService, JDoodleService>();
 builder.Services.AddScoped<ISolveService, SolveService>();
+builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IVoteService, VoteService>();
 builder.Services.AddSingleton<IAuthService, JwtAuthService>((provider) =>
     new JwtAuthService(builder.Configuration["Jwt:Key"]!, jwtSecurityKey));
 

@@ -8,4 +8,5 @@ public class LessonCreateModel
     public string LessonContent { get; set; } = null!;
     public Guid AuthorId { get; set; }
     public IFormFile? Image { get; set; }
+    public string[]? Tags { get; set; }
 }

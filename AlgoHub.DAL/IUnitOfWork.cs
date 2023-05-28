@@ -10,4 +10,6 @@ public interface IUnitOfWork
     ICommentRepository CommentRepository { get; }
     ISolveRepository SolveRepository { get; }
     ITestRepository TestRepository { get; }
+    ITagRepository TagRepository { get; }
+    IVoteRepository VoteRepository { get; }
 }

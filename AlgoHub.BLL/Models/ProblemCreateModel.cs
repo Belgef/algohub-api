@@ -11,4 +11,5 @@ public class ProblemCreateModel
     public int TimeLimitMs { get; set; }
     public int MemoryLimitBytes { get; set; }
     public TestModel[] Tests { get; set; } = null!;
+    public string[]? Tags { get; set; }
 }

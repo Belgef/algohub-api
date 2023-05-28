@@ -16,4 +16,5 @@ public class ProblemCreateViewModel
     [Range(1, 10240)]
     public int MemoryLimitBytes { get; set; }
     public string TestsString { get; set; } = null!;
+    public string TagsString { get; set; } = null!;
 }

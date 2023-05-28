@@ -16,4 +16,5 @@ public class Problem
     public DateTime? CreateDate { get; set; }
     public DateTime? UpdateDate { get; set; }
     public Test[]? Tests { get; set; }
+    public bool? Deleted { get; set; }
 }

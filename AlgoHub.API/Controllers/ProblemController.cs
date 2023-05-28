@@ -2,6 +2,7 @@
 using AlgoHub.API.ViewModels;
 using AlgoHub.BLL.Interfaces;
 using AlgoHub.BLL.Services;
+using AlgoHub.DAL.Entities;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -31,16 +32,25 @@ public class ProblemController : ControllerBase
         return problems != null ? Ok(_mapper.Map<ProblemViewModel[]>(problems)) : BadRequest();
     }
 
+    [HttpGet("Deleted")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<ProblemViewModel[]>> GetDeleted()
+    {
+        var problems = await _problemService.GetProblems(true);
+
+        return problems != null ? Ok(_mapper.Map<ProblemViewModel[]>(problems)) : BadRequest();
+    }
+
     [HttpGet("{problemId}")]
     public async Task<ActionResult<ProblemViewModel>> Get(int problemId)
     {
         var problem = await _problemService.GetProblemById(problemId);
 
-        return problem != null ? Ok(problem) : NotFound();
+        return problem != null && (!(problem.Deleted ?? false) || User.IsInRole("Administrator")) ? Ok(problem) : NotFound();
     }
 
     [HttpPost]
-    [Authorize(Roles = "User")]
+    [Authorize(Roles = "User,Administrator")]
     public async Task<ActionResult<int?>> AddProblem([FromForm] ProblemCreateViewModel problem)
     {
         string? userId = User.FindFirstValue("Id");
@@ -56,41 +66,28 @@ public class ProblemController : ControllerBase
         {
             PropertyNameCaseInsensitive = true
         });
+        model.Tags = JsonSerializer.Deserialize<string[]>(problem.TagsString);
 
         int? result = await _problemService.AddProblem(model);
 
         return result != null ? Ok(result) : BadRequest();
     }
 
-    [HttpPost("Vote")]
-    [Authorize(Roles = "User")]
-    public async Task<ActionResult<int?>> AddProblemVote([FromForm] VoteViewModel vote)
+    [HttpPost("Delete/{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<bool>> DeleteProblem(int id)
     {
-        string? userId = User.FindFirstValue("Id");
+        bool result = await _problemService.DeleteProblem(id);
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        int? result = await _problemService.AddProblemVote(vote.Id, Guid.Parse(userId!), vote.IsUpvote);
-
-        return result != null ? Ok(result) : BadRequest();
+        return result ? Ok() : BadRequest();
     }
 
-    [HttpGet("Vote")]
-    [Authorize(Roles = "User")]
-    public async Task<ActionResult<bool?>> GetProblemVote(int problemId)
+    [HttpPost("Retrieve/{id}")]
+    [Authorize(Roles = "Administrator")]
+    public async Task<ActionResult<bool>> RetrieveProblem(int id)
     {
-        string? userId = User.FindFirstValue("Id");
+        bool result = await _problemService.RetrieveProblem(id);
 
-        if (userId == null)
-        {
-            return Unauthorized();
-        }
-
-        bool? result = await _problemService.GetProblemVote(problemId, Guid.Parse(userId!));
-
-        return result != null ? Ok(result) : BadRequest();
+        return result ? Ok() : BadRequest();
     }
 }

@@ -39,8 +39,10 @@ public class LessonRepository : ILessonRepository
         return result.FirstOrDefault();
     }
 
-    public async Task<Lesson[]> GetLessons()
+    public async Task<Lesson[]> GetLessons(bool deleted = false)
     {
+        var parameters = new DynamicParameters(new { Deleted = deleted });
+
         using var connection = _context.CreateConnection();
 
         var result = await connection.QueryAsync<Lesson?, User?, Lesson>(
@@ -54,6 +56,7 @@ public class LessonRepository : ILessonRepository
 
                 return p;
             },
+            parameters,
             splitOn: "UserName",
             commandType: CommandType.StoredProcedure);
 
@@ -77,34 +80,31 @@ public class LessonRepository : ILessonRepository
         return result.FirstOrDefault();
     }
 
-    public async Task<int?> AddLessonVote(int lessonId, Guid authorId, bool isUpvote)
+    public async Task<bool> DeleteLesson(int lessonId)
     {
         var parameters = new DynamicParameters(new
         {
             LessonId = lessonId,
-            AuthorId = authorId,
-            IsUpvote = isUpvote
         });
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<int?>("spAddLessonVote", parameters, commandType: CommandType.StoredProcedure);
+        int result = await connection.ExecuteAsync("spDeleteLesson", parameters, commandType: CommandType.StoredProcedure);
 
-        return result.FirstOrDefault();
+        return result == 1;
     }
 
-    public async Task<bool?> GetLessonVote(int lessonId, Guid authorId)
+    public async Task<bool> RetrieveLesson(int lessonId)
     {
         var parameters = new DynamicParameters(new
         {
             LessonId = lessonId,
-            AuthorId = authorId
         });
 
         using var connection = _context.CreateConnection();
 
-        var result = await connection.QueryAsync<bool?>("spGetLessonVote", parameters, commandType: CommandType.StoredProcedure);
+        int result = await connection.ExecuteAsync("spRetrieveLesson", parameters, commandType: CommandType.StoredProcedure);
 
-        return result.FirstOrDefault();
+        return result == 1;
     }
 }

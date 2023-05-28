@@ -33,14 +33,23 @@ public class LessonService : ILessonService
 
         model.LessonContent = JsonSerializer.Deserialize<ContentElement[]>(result.LessonContent ?? "[]", new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
+        model.Tags = await _unitOfWork.TagRepository.GetLessonTags(lessonId);
+
         return model;
     }
 
-    public async Task<LessonModel[]> GetLessons()
+    public async Task<LessonModel[]> GetLessons(bool deleted = false)
     {
-        var result = await _unitOfWork.LessonRepository.GetLessons();
+        var result = await _unitOfWork.LessonRepository.GetLessons(deleted);
 
-        return _mapper.Map<LessonModel[]>(result);
+        var lessons = _mapper.Map<LessonModel[]>(result);
+
+        foreach (var lesson in lessons)
+        {
+            lesson.Tags = await _unitOfWork.TagRepository.GetLessonTags(lesson?.LessonId ?? -1);
+        }
+
+        return lessons;
     }
 
     public async Task<int?> AddLesson(LessonCreateModel lesson)
@@ -49,12 +58,22 @@ public class LessonService : ILessonService
         newLesson.Author = new User() { UserId = lesson.AuthorId };
         newLesson.ImageName = await _storageService.SaveFile(lesson.Image);
 
-        return await _unitOfWork.LessonRepository.AddLesson(newLesson);
+        int? lessonId = await _unitOfWork.LessonRepository.AddLesson(newLesson);
+
+        if (lessonId == null)
+        {
+            return null;
+        }
+
+        foreach (var tag in lesson.Tags ?? Array.Empty<string>())
+        {
+            await _unitOfWork.TagRepository.AddLessonTag(tag, lessonId ?? -1);
+        }
+
+        return lessonId;
     }
 
-    public Task<int?> AddLessonVote(int lessonId, Guid userId, bool isUpvote)
-        => _unitOfWork.LessonRepository.AddLessonVote(lessonId, userId, isUpvote);
+    public Task<bool> DeleteLesson(int lessonId) => _unitOfWork.LessonRepository.DeleteLesson(lessonId);
 
-    public Task<bool?> GetLessonVote(int lessonId, Guid userId)
-        => _unitOfWork.LessonRepository.GetLessonVote(lessonId, userId);
+    public Task<bool> RetrieveLesson(int lessonId) => _unitOfWork.LessonRepository.RetrieveLesson(lessonId);
 }
