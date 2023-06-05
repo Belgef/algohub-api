@@ -78,7 +78,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IProblemService, ProblemService>();
 builder.Services.AddScoped<ILessonService, LessonService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
-builder.Services.AddScoped<ICompilerService, JDoodleService>();
+builder.Services.AddScoped<ICompilerService, RextesterService>();
 builder.Services.AddScoped<ISolveService, SolveService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IVoteService, VoteService>();

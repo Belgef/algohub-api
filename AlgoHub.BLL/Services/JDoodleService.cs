@@ -9,6 +9,15 @@ using System.Text.Json;
 
 namespace AlgoHub.BLL.Services;
 
+public class JDoodleCompilationResult
+{
+    public string? Output { get; set; }
+    public string? CpuTime { get; set; }
+    public string? Memory { get; set; }
+    public string? Error { get; set; }
+    public int StatusCode { get; set; }
+}
+
 public class JDoodleService : ICompilerService
 {
     private const string Path = "https://api.jdoodle.com/v1/execute";
@@ -45,7 +54,7 @@ public class JDoodleService : ICompilerService
             _langMap[language].versionIndex
         });
 
-        var result = await response.Content.ReadFromJsonAsync<CompilationResultRaw>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
+        var result = await response.Content.ReadFromJsonAsync<JDoodleCompilationResult>(new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
         return result == null ? null : new CompilationResult()
         {

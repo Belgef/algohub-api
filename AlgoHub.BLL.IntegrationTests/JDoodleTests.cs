@@ -27,7 +27,7 @@ namespace AlgoHub.BLL.IntegrationTests
                .Build();
             serviceCollection.AddSingleton<IConfiguration>(configuration);
             serviceCollection.AddHttpClient();
-            serviceCollection.AddTransient<ICompilerService, JDoodleService>();
+            serviceCollection.AddTransient<ICompilerService, RextesterService>();
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
         }
@@ -48,10 +48,21 @@ namespace AlgoHub.BLL.IntegrationTests
         {
             ICompilerService compiler = ServiceProvider.GetService<ICompilerService>();
 
-            var result = await compiler.Compile("print(input()+\"\\n1\")", "python", "Input");
+            var result = await compiler.Compile("print(input()+\"\\n1\")", "python", "Inputt");
 
             Assert.That(result, Is.Not.Null);
-            Assert.That(result!.Output, Is.EqualTo("Input\n1\n"));
+            Assert.That(result!.Output, Is.EqualTo("Inputt\n1\n"));
+        }
+
+        [Test]
+        public async Task Compile_WhenPassedPHP_ReturnsResult()
+        {
+            ICompilerService compiler = ServiceProvider.GetService<ICompilerService>();
+
+            var result = await compiler.Compile("<?php $a=readline();echo $a;?>", "php", "Inputt");
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result!.Output, Is.EqualTo("Inputt"));
         }
 
         [Test]
@@ -59,8 +70,19 @@ namespace AlgoHub.BLL.IntegrationTests
         {
             ICompilerService compiler = ServiceProvider.GetService<ICompilerService>();
 
-            var result = await compiler.Compile("console.log(\"Hello world\")", "javascript", "");
-             
+            var result = await compiler.Compile("print(\"Hello \"+\"world \"+0/0)", "javascript", "");
+
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result!.Output, Is.EqualTo("Hello world NaN\n"));
+        }
+
+        [Test]
+        public async Task Compile_WhenPassedCSharp_ReturnsResult()
+        {
+            ICompilerService compiler = ServiceProvider.GetService<ICompilerService>();
+
+            var result = await compiler.Compile("using System;public class Program{public static void Main(string[] args){double[] s={1, 2,3 ,4,5, 6, 7};Console.WriteLine(\"Hello world\");}}", "csharp", "");
+
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.Output, Is.EqualTo("Hello world\n"));
         }
